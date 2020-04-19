@@ -48,6 +48,7 @@ ENV BASE_PACKAGES \
 
 RUN apk --update add --virtual build-dependencies \
     gettext \
+    git \
     gcc \
     musl-dev \
     libffi-dev \
