@@ -6,9 +6,9 @@ Docker image used as the environment to use Terraform to provision AWS resources
 
 ```makefile
   make \
-    STEP_1_IMAGE="golang:1.14.1-alpine3.11" \
-    STEP_2_IMAGE="alpine:3.11" \
-    TERRAFORM_VERSION=0.12.20 \
+    STEP_1_IMAGE="golang:1.15.6-alpine3.12" \
+    STEP_2_IMAGE="alpine:3.12" \
+    TERRAFORM_VERSION=0.14.4 \
     docker-build
 ```
 
