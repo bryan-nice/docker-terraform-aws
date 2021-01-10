@@ -29,8 +29,8 @@ GIT_VERSION_LONG := $(shell git describe --always --tags --long --dirty)
 # Docker Variables
 # -----------------------------------------------------------------------------
 
-STEP_1_IMAGE ?= golang:1.14.1-alpine3.11
-STEP_2_IMAGE ?= alpine:3.11
+STEP_1_IMAGE ?= golang:1.15.6-alpine3.12
+STEP_2_IMAGE ?= alpine:3.12
 DOCKER_IMAGE_PACKAGE := $(GIT_REPOSITORY_NAME)-package:$(GIT_VERSION)
 DOCKER_IMAGE_TAG ?= $(GIT_REPOSITORY_NAME):$(GIT_VERSION)
 DOCKER_IMAGE_NAME := $(GIT_REPOSITORY_NAME)
@@ -39,7 +39,7 @@ DOCKER_IMAGE_NAME := $(GIT_REPOSITORY_NAME)
 # Terraform Varibles
 # -----------------------------------------------------------------------------
 
-TERRAFORM_VERSION ?= 0.12.20
+TERRAFORM_VERSION ?= 0.14.4
 
 # -----------------------------------------------------------------------------
 # FUNCTIONS
