@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Set Tag Name
+        id: get_tag_name
+        run: echo ::set-output name=tag_name::$(echo ${GITHUB_REF##*/})
       - name: Capture environment variables
         run: printenv
       - name: Check if there are conflicts when local merging master
@@ -22,6 +25,7 @@ jobs:
             STEP_1_IMAGE="golang:1.15.6-alpine3.12" \
             STEP_2_IMAGE="alpine:3.12" \
             TERRAFORM_VERSION=0.14.4 \
+            IMAGE_TAG=${{ steps.get_tag_name.outputs.tag_name }} \
             docker-build
   logPullCdBuildDockerImage:
     needs: pullCdBuildDockerImage
@@ -41,7 +45,7 @@ jobs:
         run: curl -v -L -u runner:${{ secrets.GITHUB_TOKEN }} -o build_logs.txt ${{ steps.job_info.outputs.log_url }}/logs
       - name: Slack Notification
         id: slack_notification
-        uses: bryan-nice/slack-notification@1.0.2
+        uses: bryannice/slack-notification@1.0.2
         if: contains(steps.job_info.outputs.status, 'failure')
         env:
           SLACK_CHANNEL: ${{ steps.job_info.outputs.repo_name }}
