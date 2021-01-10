@@ -46,12 +46,12 @@ jobs:
           SLACK_COLOR: '#3278BD'
           SLACK_TITLE: 'FAULRE: ${{ steps.job_info.outputs.repo_name }} docker image build failed on commit sha ${{ github.sha }}'
           SLACK_MESSAGE: |
-            OS: alpine:3.11
+            OS: alpine:3.12
             Branch Name: ${{ steps.job_info.outputs.branch_name }}
             The commit SHA is: ${{ github.sha }}
             Git Actions Log URL: ${{ steps.job_info.outputs.html_url }}
-          SLACK_USERNAME: docker-terraform-azure
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_USERNAME: docker-alpine-terraform-aws
+          SLACK_WEBHOOK: ${{ secrets.SLACK_INCOMING_WEBHOOK }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF: ${{ github.ref }}

@@ -64,7 +64,7 @@ RUN set -x \
         awscli \
  && apk del build-dependencies \
  && rm -rf /var/cache/apk/* \
- && rm /usr/bin/python \
+ && rm -rf /usr/bin/python \
  && ln -s /usr/bin/python3 /usr/bin/python
 
 # Create Terraform User
