@@ -21,7 +21,7 @@ jobs:
             TERRAFORM_VERSION=0.14.4 \
             IMAGE_TAG=1.3.0 \
             docker-build
-  logPullCdBuildDockerImage:
+  logPullCiBuildDockerImage:
     needs: pushCiBuildDockerImage
     if: always()
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
         run: curl -v -L -u runner:${{ secrets.GITHUB_TOKEN }} -o build_logs.txt ${{ steps.job_info.outputs.log_url }}/logs
       - name: Slack Notification
         id: slack_notification
-        uses: bryannice/slack-notification@1.0.2
+        uses: bryannice/gitactions-slack-notification@1.1.0
         if: contains(steps.job_info.outputs.status, 'failure')
         env:
           SLACK_CHANNEL: ${{ steps.job_info.outputs.repo_name }}
