@@ -31,7 +31,7 @@ jobs:
             STEP_1_IMAGE=golang:1.15.6-alpine3.12
             STEP_2_IMAGE=alpine:3.12
             TERRAFORM_VERSION=0.14.4
-          file: build/docker/Dockerfile
+          file: Dockerfile
           tags: |
             bryannice/alpine-terraform-aws:latest
             bryannice/alpine-terraform-aws:${{ steps.get_tag_name.outputs.tag_name }}
