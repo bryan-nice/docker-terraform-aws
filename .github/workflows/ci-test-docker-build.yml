@@ -1,28 +1,28 @@
-name: Pull CD Build Test For Docker Image
+name: Push CI Build Test For Docker Image
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
 
 jobs:
-  pullCdBuildDockerImage:
+  pushCiBuildDockerImage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Check if there are conflicts when local merging master
-        id: local_merge_master
-        run: git merge origin/master
+      - name: Capture environment variables
+        run: printenv
       - name: Build Terraform Docker Image
         id: build_terraform_docker_image
         run: |
           make \
-            STEP_1_IMAGE="golang:1.14.1-alpine3.11" \
-            STEP_2_IMAGE="alpine:3.11" \
-            TERRAFORM_VERSION=0.12.20 \
+            STEP_1_IMAGE="golang:1.15.6-alpine3.12" \
+            STEP_2_IMAGE="alpine:3.12" \
+            TERRAFORM_VERSION=0.14.4 \
+            IMAGE_TAG=1.3.0 \
             docker-build
-  logPullCdBuildDockerImage:
-    needs: pullCdBuildDockerImage
+  logPullCiBuildDockerImage:
+    needs: pushCiBuildDockerImage
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -39,25 +39,25 @@ jobs:
         run: curl -v -L -u runner:${{ secrets.GITHUB_TOKEN }} -o build_logs.txt ${{ steps.job_info.outputs.log_url }}/logs
       - name: Slack Notification
         id: slack_notification
-        uses: bryan-nice/slack-notification@1.0.2
+        uses: bryannice/gitactions-slack-notification@2.0.0
         if: contains(steps.job_info.outputs.status, 'failure')
         env:
+          GITHUB_ACTION: ${{ github.action }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_WORKFLOW: ${{ github.workflow }}
           SLACK_CHANNEL: ${{ steps.job_info.outputs.repo_name }}
           SLACK_COLOR: '#3278BD'
-          SLACK_TITLE: 'FAULRE: ${{ steps.job_info.outputs.repo_name }} docker image build failed on commit sha ${{ github.sha }}'
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_INCOMING_WEBHOOK }}
           SLACK_MESSAGE: |
-            OS: alpine:3.11
+            OS: alpine:3.12
             Branch Name: ${{ steps.job_info.outputs.branch_name }}
             The commit SHA is: ${{ github.sha }}
             Git Actions Log URL: ${{ steps.job_info.outputs.html_url }}
-          SLACK_USERNAME: docker-terraform-azure
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_ACTION: ${{ github.action }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_WORKFLOW: ${{ github.workflow }}
+          SLACK_TITLE: 'FAULRE: ${{ steps.job_info.outputs.repo_name }} docker image build failed on commit sha ${{ github.sha }}'
+          SLACK_USERNAME: ${{ steps.job_info.outputs.repo_name }}
       - name: Persisting log
         id: persisting_log
         if: always()

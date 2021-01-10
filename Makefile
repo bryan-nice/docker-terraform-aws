@@ -29,8 +29,9 @@ GIT_VERSION_LONG := $(shell git describe --always --tags --long --dirty)
 # Docker Variables
 # -----------------------------------------------------------------------------
 
-STEP_1_IMAGE ?= golang:1.14.1-alpine3.11
-STEP_2_IMAGE ?= alpine:3.11
+STEP_1_IMAGE ?= golang:1.15.6-alpine3.12
+STEP_2_IMAGE ?= alpine:3.12
+IMAGE_TAG ?= $(GIT_VERSION)
 DOCKER_IMAGE_PACKAGE := $(GIT_REPOSITORY_NAME)-package:$(GIT_VERSION)
 DOCKER_IMAGE_TAG ?= $(GIT_REPOSITORY_NAME):$(GIT_VERSION)
 DOCKER_IMAGE_NAME := $(GIT_REPOSITORY_NAME)
@@ -39,7 +40,7 @@ DOCKER_IMAGE_NAME := $(GIT_REPOSITORY_NAME)
 # Terraform Varibles
 # -----------------------------------------------------------------------------
 
-TERRAFORM_VERSION ?= 0.12.20
+TERRAFORM_VERSION ?= 0.14.4
 
 # -----------------------------------------------------------------------------
 # FUNCTIONS
@@ -57,6 +58,7 @@ docker-build: docker-rmi-for-build
 	@docker build \
 		--build-arg STEP_1_IMAGE=$(STEP_1_IMAGE) \
 		--build-arg STEP_2_IMAGE=$(STEP_2_IMAGE) \
+		--build-arg IMAGE_TAG=${IMAGE_TAG} \
 		--build-arg TERRAFORM_VERSION=$(TERRAFORM_VERSION) \
 		--tag $(DOCKER_IMAGE_NAME) \
 		--tag $(DOCKER_IMAGE_NAME):$(GIT_VERSION) \
@@ -69,6 +71,7 @@ docker-build-development-cache: docker-rmi-for-build-development-cache
 	@docker build \
 		--build-arg STEP_1_IMAGE=$(STEP_1_IMAGE) \
 		--build-arg STEP_2_IMAGE=$(STEP_2_IMAGE) \
+		--build-arg IMAGE_TAG=${IMAGE_TAG} \
 		--build-arg TERRAFORM_VERSION=$(TERRAFORM_VERSION) \
 		--tag $(DOCKER_IMAGE_TAG) \
 		.

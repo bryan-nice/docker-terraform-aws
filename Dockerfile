@@ -1,9 +1,10 @@
-ARG STEP_1_IMAGE=golang:1.14.1-alpine3.11
-ARG STEP_2_IMAGE=alpine:3.11
+ARG STEP_1_IMAGE=golang:1.15.6-alpine3.12
+ARG STEP_2_IMAGE=alpine:3.12
+ARG IMAGE_TAG=0.0.0
 
 FROM ${STEP_1_IMAGE} AS STEP_1
 
-ARG TERRAFORM_VERSION=0.12.20
+ARG TERRAFORM_VERSION=0.14.4
 
 ENV BUILD_PACKAGES \
     bash \
@@ -30,7 +31,7 @@ RUN git clone https://github.com/hashicorp/terraform.git ./ \
 FROM ${STEP_2_IMAGE} AS STEP_2
 
 LABEL Name="bryan-nice/docker-terrraform-azure" \
-      Version="1.0.0"
+      Version=${IMAGE_TAG}
 
 # Copy from Step 1
 COPY --from=STEP_1 /go/bin/terraform /usr/bin/terraform
@@ -43,7 +44,7 @@ ENV BASE_PACKAGES \
     tar \
     openssh-client \
     sshpass \
-    py-pip \
+    py3-pip \
     python3
 
 RUN apk --update add --virtual build-dependencies \
@@ -63,7 +64,7 @@ RUN set -x \
         awscli \
  && apk del build-dependencies \
  && rm -rf /var/cache/apk/* \
- && rm /usr/bin/python \
+ && rm -rf /usr/bin/python \
  && ln -s /usr/bin/python3 /usr/bin/python
 
 # Create Terraform User
