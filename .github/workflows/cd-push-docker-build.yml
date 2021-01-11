@@ -36,7 +36,7 @@ jobs:
             bryannice/alpine-terraform-aws:latest
             bryannice/alpine-terraform-aws:${{ steps.get_tag_name.outputs.tag_name }}
       - name: Push to docker hub
-        run: docker push bryannice/alpine-terraform-aws --all-tags
+        run: docker image push --all-tags bryannice/alpine-terraform-aws
       - name: Update Docker Hub Description
         uses: peter-evans/dockerhub-description@v2.4.1
         if: success()
