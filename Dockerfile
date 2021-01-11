@@ -39,6 +39,7 @@ COPY --from=STEP_1 /go/bin/terraform /usr/bin/terraform
 ENV BASE_PACKAGES \
     bash \
     curl \
+    git \
     make \
     ncurses \
     tar \
@@ -49,7 +50,6 @@ ENV BASE_PACKAGES \
 
 RUN apk --update add --virtual build-dependencies \
     gettext \
-    git \
     gcc \
     musl-dev \
     libffi-dev \
